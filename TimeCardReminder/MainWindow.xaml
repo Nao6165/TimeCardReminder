@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TimeCardReminder"
         xmlns:form="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="450">
+        Title="TimeCardReminder" Height="300" Width="450" Icon="TimeCard.bmp">
 
     <Grid RenderTransformOrigin="0.512,0.331">
         <Grid.RowDefinitions>
@@ -22,7 +22,9 @@
         <WindowsFormsHost Margin="184,37,10,65" Grid.Column="1" Grid.Row="1">
             <form:DateTimePicker x:Name="dateTimePicker1" Left="100" Width="53"  Format="Time" ShowUpDown="True" Size="0, 0"/>
         </WindowsFormsHost>
-        <TextBox x:Name="textBox1" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="10,33,0,0" TextWrapping="Wrap" Text="リマインド内容を記入してね" VerticalAlignment="Top" Width="383"/>
+        <TextBox x:Name="textBox1" Grid.Column="1" HorizontalAlignment="Left" Height="60" Margin="10,33,0,0" TextWrapping="Wrap" Text="リマインド内容を記入してね" VerticalAlignment="Top" Width="383"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,12,0,0" TextWrapping="Wrap" Text="リマインドメッセージ：" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="184,21,0,0" Grid.Row="1" TextWrapping="Wrap" Text="時刻指定：" VerticalAlignment="Top"/>
     </Grid>
 
 </Window>
