@@ -29,13 +29,21 @@ namespace TimeCardReminder
 
         private DispatcherTimer timer1;
 
+        /// <summary>
+        /// Setボタン押下時の動作。タイマーをセットする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
             // time1 に今日の 8 時までの時間を代入
-            var time1 = DateTime.Today + new TimeSpan(23, 20, 0) - DateTime.Now;
+            DateTime dt = dateTimePicker1.Value;
+            TimeSpan st = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
+            //var time1 = DateTime.Today + new TimeSpan(23, 20, 0) - DateTime.Now;
+            var time1 = DateTime.Today + st - DateTime.Now;
 
             // 8 時過ぎていれば次の日の 8 時にする
             if (time1 < TimeSpan.Zero) time1 += new TimeSpan(24, 0, 0);
