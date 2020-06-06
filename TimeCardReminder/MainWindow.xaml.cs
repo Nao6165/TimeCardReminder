@@ -14,6 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.ComponentModel;
+// ObservableCollection<T>を使用するために必要
+using System.Collections.ObjectModel;
+
 
 namespace TimeCardReminder
 {
@@ -25,6 +28,7 @@ namespace TimeCardReminder
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private DispatcherTimer timer1;
@@ -75,6 +79,25 @@ namespace TimeCardReminder
         private void StopTimer(object sender, CancelEventArgs e)
         {
             timer1.Stop();
+        }
+    }
+
+    public class Schedule
+    {
+        public DispatcherTimer Timer { get; set; }
+        public string Message { get; set; }
+
+        public Schedule(DispatcherTimer timer, String message)
+        {
+            this.Timer = timer;
+            this.Message = message;
+        }
+    }
+
+    public class Schedules : ObservableCollection<Schedule>
+    {
+        public Schedules()
+        {
         }
     }
 }
