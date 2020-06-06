@@ -80,14 +80,45 @@ namespace TimeCardReminder
         {
             timer1.Stop();
         }
+
+        /// <summary>
+        /// 追加ボタン押下―ListBox1に項目を追加する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            // メッセージが設定されていなければ無効
+            if(textBox1.Text == null) { return; }
+
+            // ListBoxに登録
+            Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString());
+            ListBox1.Items.Add(schedule);
+            
+
+            // テキストボックス内の文字を消去
+            textBox1.Text = null;
+        }
+
+        /// <summary>
+        /// 削除ボタン押下処理―ListBox1内の項目を削除する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button3_Click(object sender, RoutedEventArgs e)
+        {
+            // 選択項目がなければ終了
+            if(ListBox1.SelectedItems.Count == 0) { return; }
+            ListBox1.Items.RemoveAt(ListBox1.SelectedIndex);
+        }
     }
 
     public class Schedule
     {
-        public DispatcherTimer Timer { get; set; }
+        public DateTime Timer { get; set; }
         public string Message { get; set; }
 
-        public Schedule(DispatcherTimer timer, String message)
+        public Schedule(DateTime timer, String message)
         {
             this.Timer = timer;
             this.Message = message;
@@ -99,5 +130,7 @@ namespace TimeCardReminder
         public Schedules()
         {
         }
+
+        public List<Schedule> mySchedules { get; set; }
     }
 }
