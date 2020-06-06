@@ -46,7 +46,6 @@ namespace TimeCardReminder
             // time1 にリマインド目標時刻を代入
             DateTime dt = dateTimePicker1.Value;
             TimeSpan st = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
-            //var time1 = DateTime.Today + new TimeSpan(23, 20, 0) - DateTime.Now;
             var time1 = DateTime.Today + st - DateTime.Now;
 
             // 目標時刻を過ぎていれば次の日の同時刻にする
@@ -63,8 +62,6 @@ namespace TimeCardReminder
 
         private void Method1(object sender, EventArgs e)
         {
-            // MessageBox.Show($"時間ですよ！({DateTime.Now.ToString("HH:mm")})");
-
             MessageBox.Show($"{textBox1.Text.ToString()}({DateTime.Now.ToString("HH:mm")})",
                 "caption",
                 MessageBoxButton.OK,
