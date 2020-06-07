@@ -29,9 +29,13 @@ namespace TimeCardReminder
         {
             InitializeComponent();
 
+            // this.DataContext = new Schedules();
+            schedules.mySchedules = new List<Schedule>();
         }
 
         private DispatcherTimer timer1;
+        public Schedules schedules = new Schedules();
+        public Schedule nextSchedule = new Schedule(new DateTime(),null);
 
         /// <summary>
         /// Setボタン押下時の動作。タイマーをセットする
@@ -40,11 +44,20 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
+            // リストボックスに項目がなければ終了。
+            if (ListBox1.Items.Count == 0) { return; }
+
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
+            for (int i = 0; i < ListBox1.Items.Count; i++)
+            {
+                schedules.mySchedules.Add((Schedule)ListBox1.Items.GetItemAt(i));
+            }
+            nextSchedule = schedules.getNextSchedule();
+
             // time1 にリマインド目標時刻を代入
-            DateTime dt = dateTimePicker1.Value;
+            DateTime dt = nextSchedule.Timer;
             TimeSpan st = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
             var time1 = DateTime.Today + st - DateTime.Now;
 
@@ -62,8 +75,10 @@ namespace TimeCardReminder
 
         private void Method1(object sender, EventArgs e)
         {
-            MessageBox.Show($"{textBox1.Text.ToString()}({DateTime.Now.ToString("HH:mm")})",
-                "caption",
+
+            //            MessageBox.Show($"{textBox1.Text.ToString()}({DateTime.Now.ToString("HH:mm")})",
+            MessageBox.Show($"{nextSchedule.Message}({DateTime.Now.ToString("HH:mm")})",
+            "caption",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information,
                 MessageBoxResult.OK,
@@ -129,5 +144,38 @@ namespace TimeCardReminder
         }
 
         public List<Schedule> mySchedules { get; set; }
+
+        /// <summary>
+        /// 現在時刻に最も近い予定を探す
+        /// </summary>
+        /// <returns></returns>
+        public Schedule getNextSchedule()
+        {
+            Schedule schedule = new Schedule(new System.DateTime(0), null);
+            TimeSpan tsMin = new TimeSpan();
+            int nextIndex = 0;
+
+            // 予定がなければ終了
+            if(mySchedules[0].Message == null) { return null; }
+
+            for (int i = 0; i < mySchedules.Count; i++)
+            {
+                DateTime dt = mySchedules[i].Timer;
+                TimeSpan ts = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
+                var tsSrc = DateTime.Today + ts - DateTime.Now;
+
+                // 目標時刻を過ぎていれば次の日の同時刻にする
+                if (tsSrc < TimeSpan.Zero) tsSrc += new TimeSpan(24, 0, 0);
+
+                if ((i == 0) || (tsSrc < tsMin))
+                {
+                    tsMin = tsSrc;
+                    nextIndex = i;
+                }
+
+            }
+
+            return mySchedules[nextIndex];
+        }
     }
 }
