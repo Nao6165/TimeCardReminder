@@ -44,6 +44,11 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
+            SetTimerEvent();
+        }
+
+        private void SetTimerEvent()
+        {
             // リストボックスに項目がなければ終了。
             if (ListBox1.Items.Count == 0) { return; }
 
@@ -70,21 +75,26 @@ namespace TimeCardReminder
             timer1.Tick += new EventHandler(Method1);
 
             timer1.Start();
-
         }
 
+        /// <summary>
+        /// 通知イベント処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Method1(object sender, EventArgs e)
         {
 
-            //            MessageBox.Show($"{textBox1.Text.ToString()}({DateTime.Now.ToString("HH:mm")})",
             MessageBox.Show($"{nextSchedule.Message}({DateTime.Now.ToString("HH:mm")})",
-            "caption",
+                "TimeCardReminder",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information,
                 MessageBoxResult.OK,
                 MessageBoxOptions.DefaultDesktopOnly);
 
             timer1.Stop();
+
+            SetTimerEvent();
         }
 
         // タイマを停止
