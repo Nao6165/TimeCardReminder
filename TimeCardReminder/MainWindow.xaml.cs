@@ -16,7 +16,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 // ObservableCollection<T>を使用するために必要
 using System.Collections.ObjectModel;
-
+using System.IO;
 
 namespace TimeCardReminder
 {
@@ -30,12 +30,16 @@ namespace TimeCardReminder
             InitializeComponent();
 
             // this.DataContext = new Schedules();
+
+            ReadFromFile();
+
             schedules.mySchedules = new List<Schedule>();
         }
 
         private DispatcherTimer timer1;
         public Schedules schedules = new Schedules();
         public Schedule nextSchedule = new Schedule(new DateTime(),null);
+        public string scheduleFileName = "schedule.txt";
 
         /// <summary>
         /// Setボタン押下時の動作。タイマーをセットする
@@ -44,10 +48,14 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-            SetTimerEvent();
+            SetNextTimerEvent();
+            WriteToFile(scheduleFileName);
         }
 
-        private void SetTimerEvent()
+        /// <summary>
+        /// 次のタイマーイベントをセットする
+        /// </summary>
+        private void SetNextTimerEvent()
         {
             // リストボックスに項目がなければ終了。
             if (ListBox1.Items.Count == 0) { return; }
@@ -55,6 +63,7 @@ namespace TimeCardReminder
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
+            // ListBox1内のリストから次のスケジュールを検索
             for (int i = 0; i < ListBox1.Items.Count; i++)
             {
                 schedules.mySchedules.Add((Schedule)ListBox1.Items.GetItemAt(i));
@@ -94,13 +103,60 @@ namespace TimeCardReminder
 
             timer1.Stop();
 
-            SetTimerEvent();
+            SetNextTimerEvent();
         }
 
-        // タイマを停止
+        /// <summary>
+        /// タイマを停止
+        /// </summary>
         private void StopTimer(object sender, CancelEventArgs e)
         {
             timer1.Stop();
+        }
+
+        /// <summary>
+        /// ListBoxの内容をファイルに書き込む
+        /// </summary>
+        /// <param name="fileName"></param>
+        private void WriteToFile(string fileName)
+        {
+            System.IO.StreamWriter SaveFile = new System.IO.StreamWriter(fileName);
+            foreach (Schedule item in ListBox1.Items)
+            {
+                SaveFile.WriteLine($"{item.Timer}\t{item.Message}");
+            }
+            SaveFile.Close();
+        }
+
+        /// <summary>
+        /// スケジュールファイルの読み取りを行う
+        /// </summary>
+        private void ReadFromFile()
+        {
+            try
+            {   // Open the text file using a stream reader.
+                using (StreamReader sr = new StreamReader(scheduleFileName))
+                {
+                    // Read the stream to a string, and write the string to the console.
+                    String line = sr.ReadLine();
+                    while(line != null)
+                    {
+                        Schedule s = new Schedule(new DateTime(), null);
+                        string[] split = line.Split(new Char[] { '\t' });
+                        s.Timer = DateTime.Parse(split[0].ToString());
+                        s.Message = split[1].ToString();
+                        ListBox1.Items.Add(s);
+
+                        line = sr.ReadLine();
+                    }                    
+                }
+            }
+            catch (IOException e)
+            {
+                // 何もしない
+                // Console.WriteLine("The file could not be read:");
+                // Console.WriteLine(e.Message);
+            }
         }
 
         /// <summary>
