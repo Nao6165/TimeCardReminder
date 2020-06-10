@@ -50,6 +50,12 @@ namespace TimeCardReminder
         {
             SetNextTimerEvent();
             WriteToFile(scheduleFileName);
+            MessageBox.Show($"タイマーをセットしました",
+                "TimeCardReminder",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information,
+                MessageBoxResult.OK,
+                MessageBoxOptions.DefaultDesktopOnly);
         }
 
         /// <summary>
@@ -179,7 +185,7 @@ namespace TimeCardReminder
         }
 
         /// <summary>
-        /// 削除ボタン押下処理―ListBox1内の項目を削除する
+        /// 削除ボタン押下時処理―ListBox1内の項目を削除する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -189,8 +195,33 @@ namespace TimeCardReminder
             if(ListBox1.SelectedItems.Count == 0) { return; }
             ListBox1.Items.RemoveAt(ListBox1.SelectedIndex);
         }
+
+        private void ListBox1_Selected(object sender, RoutedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// 編集ボタン押下時処理―ListBox1にて指定した項目を
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ListBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Schedule schedule = new Schedule(new DateTime(), null);
+            schedule = (Schedule)ListBox1.SelectedItem;
+            textBox1.Text = schedule.Message;
+            dateTimePicker1.Value = schedule.Timer;
+        }
     }
 
+    /// <summary>
+    /// スケジュールクラス―タイマーイベント情報
+    /// </summary>
     public class Schedule
     {
         public DateTime Timer { get; set; }
@@ -203,6 +234,9 @@ namespace TimeCardReminder
         }
     }
 
+    /// <summary>
+    /// スケジュールスクラス―タイマーイベント情報を管理
+    /// </summary>
     public class Schedules : ObservableCollection<Schedule>
     {
         public Schedules()
