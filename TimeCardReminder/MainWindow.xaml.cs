@@ -129,7 +129,7 @@ namespace TimeCardReminder
             System.IO.StreamWriter SaveFile = new System.IO.StreamWriter(fileName);
             foreach (Schedule item in listBox1.Items)
             {
-                SaveFile.WriteLine($"{item.Timer}\t{item.Message}");
+                SaveFile.WriteLine($"{item.Timer}\t{item.Message}\t{item.Enable.ToString()}");
             }
             SaveFile.Close();
         }
@@ -151,6 +151,8 @@ namespace TimeCardReminder
                         string[] split = line.Split(new Char[] { '\t' });
                         s.Timer = DateTime.Parse(split[0].ToString());
                         s.Message = split[1].ToString();
+                        s.Enable = bool.Parse(split[2].ToString());
+
                         listBox1.Items.Add(s);
 
                         line = sr.ReadLine();
