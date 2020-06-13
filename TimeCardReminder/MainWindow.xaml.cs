@@ -176,7 +176,7 @@ namespace TimeCardReminder
             if(textBox1.Text == null) { return; }
 
             // ListBoxに登録
-            Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString());
+            Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString(),true);
             listBox1.Items.Add(schedule);
             
 
@@ -204,13 +204,14 @@ namespace TimeCardReminder
         private void Button4_Click(object sender, RoutedEventArgs e)
         {
             int lbIndex = listBox1.SelectedIndex;
-            Object lbItem = (Schedule)listBox1.SelectedItem;
+            Schedule scheduleLb = (Schedule)listBox1.SelectedItem;
 
             Schedule schedule = new Schedule(new DateTime(), null);
             schedule.Message = textBox1.Text;
             schedule.Timer = dateTimePicker1.Value;
+            schedule.Enable = scheduleLb.Enable;
 
-            listBox1.Items.Remove(lbItem);
+            listBox1.Items.Remove(scheduleLb);
 
             listBox1.Items.Insert(lbIndex, schedule);
         }
@@ -222,8 +223,7 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void ListBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Schedule schedule = new Schedule(new DateTime(), null);
-            schedule = (Schedule)listBox1.SelectedItem;
+            Schedule schedule = (Schedule)listBox1.SelectedItem;
             if(schedule == null)
             {   // listBox1のItemが削除された場合は何もしない
                 return;
@@ -238,11 +238,13 @@ namespace TimeCardReminder
     /// </summary>
     public class Schedule
     {
+        public bool Enable { get; set; }
         public DateTime Timer { get; set; }
         public string Message { get; set; }
 
-        public Schedule(DateTime timer, String message)
+        public Schedule(DateTime timer, String message, bool enable = false)
         {
+            this.Enable = enable;
             this.Timer = timer;
             this.Message = message;
         }
