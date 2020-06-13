@@ -48,33 +48,51 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-            SetNextTimerEvent();
+            bool rst = SetNextTimerEvent();
+            if(rst == true) 
+            {
+                MessageBox.Show($"タイマーをセットしました",
+                    "TimeCardReminder",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.DefaultDesktopOnly);
+            }
+            else
+            {
+                MessageBox.Show($"タイマーは無効です",
+                    "TimeCardReminder",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.DefaultDesktopOnly);
+            }
+
             WriteToFile(scheduleFileName);
-            MessageBox.Show($"タイマーをセットしました",
-                "TimeCardReminder",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information,
-                MessageBoxResult.OK,
-                MessageBoxOptions.DefaultDesktopOnly);
         }
 
         /// <summary>
         /// 次のタイマーイベントをセットする
         /// </summary>
-        private void SetNextTimerEvent()
+        private bool SetNextTimerEvent()
         {
             // リストボックスに項目がなければ終了。
-            if (listBox1.Items.Count == 0) { return; }
+            if (listBox1.Items.Count == 0) { return false; }
 
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
             // listBox1内のリストから次のスケジュールを検索
-            for (int i = 0; i < listBox1.Items.Count; i++)
+            // for (int i = 0; i < listBox1.Items.Count; i++)
+            foreach(Schedule schedule in listBox1.Items)
             {
-                schedules.mySchedules.Add((Schedule)listBox1.Items.GetItemAt(i));
+                schedules.mySchedules.Add(schedule);
             }
-            nextSchedule = schedules.getNextSchedule();
+            bool ret = schedules.getNextSchedule(ref nextSchedule);
+            if (ret == false)
+            {
+                return false;    
+            }
 
             // time1 にリマインド目標時刻を代入
             DateTime dt = nextSchedule.Timer;
@@ -90,6 +108,8 @@ namespace TimeCardReminder
             timer1.Tick += new EventHandler(Method1);
 
             timer1.Start();
+
+            return true;
         }
 
         /// <summary>
@@ -100,7 +120,7 @@ namespace TimeCardReminder
         private void Method1(object sender, EventArgs e)
         {
 
-            MessageBox.Show($"{nextSchedule.Message}({DateTime.Now.ToString("HH:mm")})",
+            MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information,
@@ -175,7 +195,17 @@ namespace TimeCardReminder
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             // メッセージが設定されていなければ無効
-            if(textBox1.Text == null) { return; }
+            if(textBox1.Text == null) 
+            {
+                MessageBox.Show($"メッセージがありません",
+                    "TimeCardReminder",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.DefaultDesktopOnly);
+
+                return; 
+            }
 
             // ListBoxに登録
             Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString(),true);
@@ -199,7 +229,7 @@ namespace TimeCardReminder
         }
 
         /// <summary>
-        /// 編集ボタン押下時処理―listBox1にて指定した項目を
+        /// 編集ボタン押下時処理―listBox1にて指定した項目を変更する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -267,33 +297,42 @@ namespace TimeCardReminder
         /// 現在時刻に最も近い予定を探す
         /// </summary>
         /// <returns></returns>
-        public Schedule getNextSchedule()
+        public bool getNextSchedule(ref Schedule schedule)
         {
-            Schedule schedule = new Schedule(new System.DateTime(0), null);
             TimeSpan tsMin = new TimeSpan();
-            int nextIndex = 0;
 
-            // 予定がなければ終了
-            if(mySchedules[0].Message == null) { return null; }
+            // 予定がなければ終了。初期化されたscheduleを返す。
+            if(mySchedules[0].Message == null) { return false; }
 
-            for (int i = 0; i < mySchedules.Count; i++)
+            int cnt = 0;    // 有効データカウンタ
+            // for (int i = 0; i < mySchedules.Count; i++)
+            foreach(Schedule s in mySchedules)
             {
-                DateTime dt = mySchedules[i].Timer;
+                // チェックボックスが有効なものだけで探す
+                if (s.Enable == false) { continue; }
+                cnt++;
+
+                // TimeSpanの算出
+                DateTime dt = s.Timer;
                 TimeSpan ts = new TimeSpan(dt.Hour, dt.Minute, dt.Second);
                 var tsSrc = DateTime.Today + ts - DateTime.Now;
 
                 // 目標時刻を過ぎていれば次の日の同時刻にする
                 if (tsSrc < TimeSpan.Zero) tsSrc += new TimeSpan(24, 0, 0);
-
-                if ((i == 0) || (tsSrc < tsMin))
+                
+                // TimeSpanの最も短い物を探す
+                if ((cnt == 1) || (tsSrc < tsMin))
                 {
                     tsMin = tsSrc;
-                    nextIndex = i;
+                    schedule = s;
                 }
 
             }
 
-            return mySchedules[nextIndex];
+            // 何も選択されなかった。初期化されたscheduleを返す。
+            if (cnt == 0) { return false; }
+
+            return true;
         }
     }
 }
