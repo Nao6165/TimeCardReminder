@@ -64,15 +64,15 @@ namespace TimeCardReminder
         private void SetNextTimerEvent()
         {
             // リストボックスに項目がなければ終了。
-            if (ListBox1.Items.Count == 0) { return; }
+            if (listBox1.Items.Count == 0) { return; }
 
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
-            // ListBox1内のリストから次のスケジュールを検索
-            for (int i = 0; i < ListBox1.Items.Count; i++)
+            // listBox1内のリストから次のスケジュールを検索
+            for (int i = 0; i < listBox1.Items.Count; i++)
             {
-                schedules.mySchedules.Add((Schedule)ListBox1.Items.GetItemAt(i));
+                schedules.mySchedules.Add((Schedule)listBox1.Items.GetItemAt(i));
             }
             nextSchedule = schedules.getNextSchedule();
 
@@ -127,7 +127,7 @@ namespace TimeCardReminder
         private void WriteToFile(string fileName)
         {
             System.IO.StreamWriter SaveFile = new System.IO.StreamWriter(fileName);
-            foreach (Schedule item in ListBox1.Items)
+            foreach (Schedule item in listBox1.Items)
             {
                 SaveFile.WriteLine($"{item.Timer}\t{item.Message}");
             }
@@ -151,7 +151,7 @@ namespace TimeCardReminder
                         string[] split = line.Split(new Char[] { '\t' });
                         s.Timer = DateTime.Parse(split[0].ToString());
                         s.Message = split[1].ToString();
-                        ListBox1.Items.Add(s);
+                        listBox1.Items.Add(s);
 
                         line = sr.ReadLine();
                     }                    
@@ -166,7 +166,7 @@ namespace TimeCardReminder
         }
 
         /// <summary>
-        /// 追加ボタン押下―ListBox1に項目を追加する
+        /// 追加ボタン押下―listBox1に項目を追加する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -177,7 +177,7 @@ namespace TimeCardReminder
 
             // ListBoxに登録
             Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString());
-            ListBox1.Items.Add(schedule);
+            listBox1.Items.Add(schedule);
             
 
             // テキストボックス内の文字を消去
@@ -185,35 +185,49 @@ namespace TimeCardReminder
         }
 
         /// <summary>
-        /// 削除ボタン押下時処理―ListBox1内の項目を削除する
+        /// 削除ボタン押下時処理―listBox1内の項目を削除する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Button3_Click(object sender, RoutedEventArgs e)
         {
             // 選択項目がなければ終了
-            if(ListBox1.SelectedItems.Count == 0) { return; }
-            ListBox1.Items.RemoveAt(ListBox1.SelectedIndex);
-        }
-
-        private void ListBox1_Selected(object sender, RoutedEventArgs e)
-        {
+            if(listBox1.SelectedItems.Count == 0) { return; }
+            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
         }
 
         /// <summary>
-        /// 編集ボタン押下時処理―ListBox1にて指定した項目を
+        /// 編集ボタン押下時処理―listBox1にて指定した項目を
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Button4_Click(object sender, RoutedEventArgs e)
         {
+            int lbIndex = listBox1.SelectedIndex;
+            Object lbItem = (Schedule)listBox1.SelectedItem;
 
+            Schedule schedule = new Schedule(new DateTime(), null);
+            schedule.Message = textBox1.Text;
+            schedule.Timer = dateTimePicker1.Value;
+
+            listBox1.Items.Remove(lbItem);
+
+            listBox1.Items.Insert(lbIndex, schedule);
         }
 
+        /// <summary>
+        /// listBox1内の選択されているアイテムに変化があった時の処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Schedule schedule = new Schedule(new DateTime(), null);
-            schedule = (Schedule)ListBox1.SelectedItem;
+            schedule = (Schedule)listBox1.SelectedItem;
+            if(schedule == null)
+            {   // listBox1のItemが削除された場合は何もしない
+                return;
+            }
             textBox1.Text = schedule.Message;
             dateTimePicker1.Value = schedule.Timer;
         }
