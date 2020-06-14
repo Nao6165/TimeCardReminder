@@ -31,13 +31,21 @@ namespace TimeCardReminder
 
             // this.DataContext = new Schedules();
 
-            ReadFromFile();
-
+            Schedules schedules = new Schedules();
             schedules.mySchedules = new List<Schedule>();
+
+            ReadFromFile(ref schedules);
+
+            foreach(Schedule s in schedules.mySchedules)
+            {
+                listBox1.Items.Add(s);
+            }
+
+            SetNextTimerEvent();
         }
 
         private DispatcherTimer timer1;
-        public Schedules schedules = new Schedules();
+        // public Schedules schedules = new Schedules();
         public Schedule nextSchedule = new Schedule(new DateTime(),null);
         public string scheduleFileName = "schedule.txt";
 
@@ -77,20 +85,27 @@ namespace TimeCardReminder
         private bool SetNextTimerEvent()
         {
             // リストボックスに項目がなければ終了。
-            if (listBox1.Items.Count == 0) { return false; }
+            if (listBox1.Items.Count == 0)
+            {
+                textBlock1.Text = $"次の通知はありません";
+                return false;
+            }
 
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
             // listBox1内のリストから次のスケジュールを検索
             // for (int i = 0; i < listBox1.Items.Count; i++)
-            foreach(Schedule schedule in listBox1.Items)
+            Schedules schedules = new Schedules();
+            schedules.mySchedules = new List<Schedule>();
+            foreach (Schedule s in listBox1.Items)
             {
-                schedules.mySchedules.Add(schedule);
+                schedules.mySchedules.Add(s);
             }
             bool ret = schedules.getNextSchedule(ref nextSchedule);
             if (ret == false)
             {
+                textBlock1.Text = $"次の通知はありません";
                 return false;    
             }
 
@@ -108,6 +123,8 @@ namespace TimeCardReminder
             timer1.Tick += new EventHandler(Method1);
 
             timer1.Start();
+
+            textBlock1.Text = $"次の通知は{nextSchedule.Timer.TimeOfDay.ToString()}です。";
 
             return true;
         }
@@ -157,7 +174,7 @@ namespace TimeCardReminder
         /// <summary>
         /// スケジュールファイルの読み取りを行う
         /// </summary>
-        private void ReadFromFile()
+        private void ReadFromFile(ref Schedules schedules)
         {
             try
             {   // Open the text file using a stream reader.
@@ -173,7 +190,8 @@ namespace TimeCardReminder
                         s.Message = split[1].ToString();
                         s.Enable = bool.Parse(split[2].ToString());
 
-                        listBox1.Items.Add(s);
+                        // listBox1.Items.Add(s);
+                        schedules.mySchedules.Add(s);
 
                         line = sr.ReadLine();
                     }                    
@@ -214,6 +232,9 @@ namespace TimeCardReminder
 
             // テキストボックス内の文字を消去
             textBox1.Text = null;
+
+            // ListBox設定をファイルに保存
+            WriteToFile(scheduleFileName);
         }
 
         /// <summary>
@@ -226,6 +247,8 @@ namespace TimeCardReminder
             // 選択項目がなければ終了
             if(listBox1.SelectedItems.Count == 0) { return; }
             listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+            // ListBox設定をファイルに保存
+            WriteToFile(scheduleFileName);
         }
 
         /// <summary>
@@ -246,6 +269,10 @@ namespace TimeCardReminder
             listBox1.Items.Remove(scheduleLb);
 
             listBox1.Items.Insert(lbIndex, schedule);
+
+            // ListBox設定をファイルに保存
+            WriteToFile(scheduleFileName);
+
         }
 
         /// <summary>
