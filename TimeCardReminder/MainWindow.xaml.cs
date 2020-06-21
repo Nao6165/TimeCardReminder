@@ -42,6 +42,7 @@ namespace TimeCardReminder
             }
 
             SetNextTimerEvent();
+
         }
 
         private DispatcherTimer timer1;
@@ -245,12 +246,25 @@ namespace TimeCardReminder
         private void Button3_Click(object sender, RoutedEventArgs e)
         {
             // 選択項目がなければ終了
-            if(listBox1.SelectedItems.Count == 0) { return; }
+            if(listBox1.SelectedItems.Count == 0)
+            {
+                MessageBox.Show($"アイテムが選択されていません",
+                   "TimeCardReminder",
+                   MessageBoxButton.OK,
+                   MessageBoxImage.Information,
+                   MessageBoxResult.OK,
+                   MessageBoxOptions.DefaultDesktopOnly);
+                return; 
+            }
             listBox1.Items.RemoveAt(listBox1.SelectedIndex);
             // ListBox設定をファイルに保存
             WriteToFile(scheduleFileName);
         }
 
+        // なぜかReleaseビルドでButton4_Clickで定義すると
+        // System.NullReferenceExceptionエラーとなるので外で宣言
+        public Schedule scheduleTempNew = new Schedule(new DateTime(0),null);
+        public Schedule scheduleTempOld = new Schedule(new DateTime(0), null);
         /// <summary>
         /// 編集ボタン押下時処理―listBox1にて指定した項目を変更する
         /// </summary>
@@ -258,20 +272,35 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button4_Click(object sender, RoutedEventArgs e)
         {
-            int lbIndex = listBox1.SelectedIndex;
-            Schedule scheduleLb = (Schedule)listBox1.SelectedItem;
+            int lbIndex = this.listBox1.SelectedIndex;
+            if(lbIndex == -1) 
+            {
+                MessageBox.Show($"アイテムが選択されていません",
+                    "TimeCardReminder",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.DefaultDesktopOnly);
+                return; 
+            }
+            scheduleTempOld = (Schedule)this.listBox1.SelectedItem;
 
-            Schedule schedule = new Schedule(new DateTime(), null);
-            schedule.Message = textBox1.Text;
-            schedule.Timer = dateTimePicker1.Value;
-            schedule.Enable = scheduleLb.Enable;
+            scheduleTempNew.Message = this.textBox1.Text;
+            scheduleTempNew.Timer = this.dateTimePicker1.Value;
+            scheduleTempNew.Enable = scheduleTempOld.Enable;
+            listBox1.Items.Remove(scheduleTempOld);
 
-            listBox1.Items.Remove(scheduleLb);
-
-            listBox1.Items.Insert(lbIndex, schedule);
+            listBox1.Items.Insert(lbIndex, scheduleTempNew);
 
             // ListBox設定をファイルに保存
             WriteToFile(scheduleFileName);
+
+            MessageBox.Show($"選択項目を変更しました",
+               "TimeCardReminder",
+               MessageBoxButton.OK,
+               MessageBoxImage.Information,
+               MessageBoxResult.OK,
+               MessageBoxOptions.DefaultDesktopOnly);
 
         }
 

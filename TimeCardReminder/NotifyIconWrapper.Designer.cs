@@ -55,7 +55,7 @@
             // 
             this.toolStripMenuItem_Open.Name = "toolStripMenuItem_Open";
             this.toolStripMenuItem_Open.Size = new System.Drawing.Size(98, 22);
-            this.toolStripMenuItem_Open.Text = "表示";
+            this.toolStripMenuItem_Open.Text = "設定";
             // 
             // toolStripMenuItem_Exit
             // 
