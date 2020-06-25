@@ -50,7 +50,10 @@ namespace TimeCardReminder
         {
             // MainWindow を生成、表示
             var wnd = new MainWindow();
-            wnd.Show();
+            if(wnd.IsDoubleBoot() == false)
+            {
+                wnd.Show();
+            }
         }
 
         /// <summary>

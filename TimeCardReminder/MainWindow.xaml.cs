@@ -17,6 +17,7 @@ using System.ComponentModel;
 // ObservableCollection<T>を使用するために必要
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 
 namespace TimeCardReminder
 {
@@ -27,6 +28,20 @@ namespace TimeCardReminder
     {
         public MainWindow()
         {
+            if(isFirst == true)
+            {
+                _pool = new System.Threading.Semaphore(1, 1, SemaphoreName,
+                                                   out createdNew);
+                isFirst = false;
+            }
+
+            if (_pool.WaitOne(0, false) == false)
+            {
+                MessageBox.Show("すでに実行中です。同時に1つしか起動できません。", "エラー");
+                isDoubleBoot = true;
+                return;
+            }
+
             InitializeComponent();
 
             // this.DataContext = new Schedules();
@@ -49,6 +64,14 @@ namespace TimeCardReminder
         // public Schedules schedules = new Schedules();
         public Schedule nextSchedule = new Schedule(new DateTime(),null);
         public string scheduleFileName = "schedule.txt";
+
+        public static Semaphore _pool;
+        public const string SemaphoreName = "TimeCardReminderMainWindow";
+        private bool createdNew;
+        private static bool isFirst = true;
+        private static bool isDoubleBoot = false;
+
+        public bool IsDoubleBoot() { return isDoubleBoot; } 
 
         /// <summary>
         /// Setボタン押下時の動作。タイマーをセットする
@@ -318,6 +341,26 @@ namespace TimeCardReminder
             }
             textBox1.Text = schedule.Message;
             dateTimePicker1.Value = schedule.Timer;
+        }
+
+        /// <summary>
+        /// ウィンドウが閉じるときの処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void metroWindow_Closed(object sender, EventArgs e)
+        {
+            try
+            {
+                isDoubleBoot = false;
+                _pool.Release();
+                Console.WriteLine("Thread A released the semaphore.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Thread A: {0}", ex.Message);
+            }
+
         }
     }
 
