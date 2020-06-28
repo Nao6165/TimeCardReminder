@@ -51,7 +51,7 @@ namespace TimeCardReminder
             // MainWindow を生成、表示
             var wnd = new MainWindow();
             if(wnd.IsDoubleBoot() == false)
-            {
+            {   // ２重起動していない
                 wnd.Show();
             }
         }

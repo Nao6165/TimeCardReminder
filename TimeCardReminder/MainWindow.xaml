@@ -14,8 +14,8 @@
 
     <Grid RenderTransformOrigin="0.512,0.331" Margin="10,0,2,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="157*"/>
             <RowDefinition Height="146*"/>
+            <RowDefinition Height="157*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -48,6 +48,7 @@
         <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="通知アイテム：" VerticalAlignment="Top" Height="16" Width="95"/>
         <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="アイテム操作：" VerticalAlignment="Top" Height="16" Width="85"/>
         <TextBlock x:Name="textBlock1" Grid.Column="2" HorizontalAlignment="Left" Margin="10,103,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="184"/>
+        <CheckBox x:Name="checkBox2" Content="起動時にこのウィンドウを開かない" Grid.Column="2" HorizontalAlignment="Right" Margin="10,132,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="CheckBox2_Checked" Unchecked="CheckBox2_Unchecked"/>
     </Grid>
 
 </Controls:MetroWindow>

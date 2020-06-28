@@ -28,14 +28,12 @@ namespace TimeCardReminder
     {
         public MainWindow()
         {
-            // MainWindowの二重起動防止
             if(isFirst == true)
-            {
+            {   // 初回起動時の処理
+                // MainWindowの二重起動防止
                 // 初回のみセマフォを生成
                 _pool = new System.Threading.Semaphore(1, 1, SemaphoreName,
                                                    out createdNew);
-                // 初回フラグを更新
-                isFirst = false;
             }
 
             if (_pool.WaitOne(0, false) == false)
@@ -66,6 +64,16 @@ namespace TimeCardReminder
 
             // 直近のリマインド項目をタイマーセット
             SetNextTimerEvent();
+
+            checkBox2.IsChecked = Properties.Settings.Default.firstBootWindow;
+            if (  (isFirst == true)
+                &&(checkBox2.IsChecked == true)) 
+            {
+                Close();
+            }
+
+            // 初回フラグを更新
+            isFirst = false;
 
         }
 
@@ -369,13 +377,24 @@ namespace TimeCardReminder
                 currentWindow = null;   // 現在開いているMainWindowを閉じるので、無効にする
                 isDoubleBoot = false;   // ２重起動フラグを寝かす
                 _pool.Release();        // セマフォを解放する
-                Console.WriteLine("Thread A released the semaphore.");
+                Properties.Settings.Default.Save(); // アプリのプロパティ―設定を保存
+                // Console.WriteLine("Thread A released the semaphore.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Thread A: {0}", ex.Message);
+                // Console.WriteLine("Thread A: {0}", ex.Message);
             }
 
+        }
+
+        private void CheckBox2_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.firstBootWindow = true;
+        }
+
+        private void CheckBox2_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.firstBootWindow = false;
         }
     }
 
