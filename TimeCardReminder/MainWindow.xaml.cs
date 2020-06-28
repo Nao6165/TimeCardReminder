@@ -28,27 +28,35 @@ namespace TimeCardReminder
     {
         public MainWindow()
         {
+            // MainWindowの二重起動防止
             if(isFirst == true)
             {
+                // 初回のみセマフォを生成
                 _pool = new System.Threading.Semaphore(1, 1, SemaphoreName,
                                                    out createdNew);
+                // 初回フラグを更新
                 isFirst = false;
             }
 
             if (_pool.WaitOne(0, false) == false)
-            {
-                MessageBox.Show("すでに実行中です。同時に1つしか起動できません。", "エラー");
+            {   // セマフォ取得済みの場合MainWindowを起動しない
+                // 既存のMainWindowをアクティブにする
+                currentWindow.WindowState = WindowState.Normal;
+                currentWindow.Activate();
+                // NotifyIconWrapperに通知するため、二重起動発生フラグを立てる
                 isDoubleBoot = true;
                 return;
             }
+            // 現在起動しているMainWindowのオブジェクトを保存
+            currentWindow = this;
 
             InitializeComponent();
 
-            // this.DataContext = new Schedules();
-
+            // スケジュール情報を初期化
             Schedules schedules = new Schedules();
             schedules.mySchedules = new List<Schedule>();
 
+            // スケジュール情報をロード
             ReadFromFile(ref schedules);
 
             foreach(Schedule s in schedules.mySchedules)
@@ -56,6 +64,7 @@ namespace TimeCardReminder
                 listBox1.Items.Add(s);
             }
 
+            // 直近のリマインド項目をタイマーセット
             SetNextTimerEvent();
 
         }
@@ -70,8 +79,13 @@ namespace TimeCardReminder
         private bool createdNew;
         private static bool isFirst = true;
         private static bool isDoubleBoot = false;
+        private static MainWindow currentWindow;
 
-        public bool IsDoubleBoot() { return isDoubleBoot; } 
+        /// <summary>
+        /// MainWindowを２重起動しようとしたことを通知
+        /// </summary>
+        /// <returns></returns>
+        public bool IsDoubleBoot() { return isDoubleBoot; }
 
         /// <summary>
         /// Setボタン押下時の動作。タイマーをセットする
@@ -119,13 +133,13 @@ namespace TimeCardReminder
             timer1 = new DispatcherTimer();
 
             // listBox1内のリストから次のスケジュールを検索
-            // for (int i = 0; i < listBox1.Items.Count; i++)
             Schedules schedules = new Schedules();
             schedules.mySchedules = new List<Schedule>();
             foreach (Schedule s in listBox1.Items)
             {
                 schedules.mySchedules.Add(s);
             }
+
             bool ret = schedules.getNextSchedule(ref nextSchedule);
             if (ret == false)
             {
@@ -352,8 +366,9 @@ namespace TimeCardReminder
         {
             try
             {
-                isDoubleBoot = false;
-                _pool.Release();
+                currentWindow = null;   // 現在開いているMainWindowを閉じるので、無効にする
+                isDoubleBoot = false;   // ２重起動フラグを寝かす
+                _pool.Release();        // セマフォを解放する
                 Console.WriteLine("Thread A released the semaphore.");
             }
             catch (Exception ex)
@@ -369,9 +384,9 @@ namespace TimeCardReminder
     /// </summary>
     public class Schedule
     {
-        public bool Enable { get; set; }
-        public DateTime Timer { get; set; }
-        public string Message { get; set; }
+        public bool Enable { get; set; }        // リマインドの有効無効(チェックボックス)
+        public DateTime Timer { get; set; }     // リマインド時間
+        public string Message { get; set; }     // リマインド時のメッセージ
 
         public Schedule(DateTime timer, String message, bool enable = false)
         {
