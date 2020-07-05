@@ -137,6 +137,8 @@ namespace TimeCardReminder
                 return false;
             }
 
+            if(timer1 != null) { timer1.Stop(); }
+
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
 
@@ -259,7 +261,7 @@ namespace TimeCardReminder
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             // メッセージが設定されていなければ無効
-            if(textBox1.Text == null) 
+            if((textBox1.Text == null)|| (textBox1.Text == "")) 
             {
                 MessageBox.Show($"メッセージがありません",
                     "TimeCardReminder",
@@ -308,8 +310,8 @@ namespace TimeCardReminder
 
         // なぜかReleaseビルドでButton4_Clickで定義すると
         // System.NullReferenceExceptionエラーとなるので外で宣言
-        public Schedule scheduleTempNew = new Schedule(new DateTime(0),null);
-        public Schedule scheduleTempOld = new Schedule(new DateTime(0), null);
+        // public Schedule scheduleTempNew = new Schedule(new DateTime(0),null);
+        // public Schedule scheduleTempOld = new Schedule(new DateTime(0), null);
         /// <summary>
         /// 編集ボタン押下時処理―listBox1にて指定した項目を変更する
         /// </summary>
@@ -317,7 +319,10 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Button4_Click(object sender, RoutedEventArgs e)
         {
-            int lbIndex = this.listBox1.SelectedIndex;
+            Schedule scheduleTempNew = new Schedule(new DateTime(0), null);
+            Schedule scheduleTempOld;
+
+            int lbIndex = listBox1.SelectedIndex;
             if(lbIndex == -1) 
             {
                 MessageBox.Show($"アイテムが選択されていません",
@@ -328,12 +333,13 @@ namespace TimeCardReminder
                     MessageBoxOptions.DefaultDesktopOnly);
                 return; 
             }
-            scheduleTempOld = (Schedule)this.listBox1.SelectedItem;
+            scheduleTempOld = (Schedule)listBox1.SelectedItem;
 
-            scheduleTempNew.Message = this.textBox1.Text;
-            scheduleTempNew.Timer = this.dateTimePicker1.Value;
+            scheduleTempNew.Message = textBox1.Text;
+            scheduleTempNew.Timer = dateTimePicker1.Value;
             scheduleTempNew.Enable = scheduleTempOld.Enable;
-            listBox1.Items.Remove(scheduleTempOld);
+            //listBox1.Items.Remove(scheduleTempOld);
+            listBox1.Items.RemoveAt(lbIndex);
 
             listBox1.Items.Insert(lbIndex, scheduleTempNew);
 
@@ -363,6 +369,7 @@ namespace TimeCardReminder
             }
             textBox1.Text = schedule.Message;
             dateTimePicker1.Value = schedule.Timer;
+
         }
 
         /// <summary>

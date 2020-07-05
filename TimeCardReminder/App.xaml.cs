@@ -60,8 +60,8 @@ namespace TimeCardReminder
         /// <param name="e">イベントデータ を格納している ExitEventArgs</param>
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
             this.notifyIcon.Dispose();
+            base.OnExit(e);
         }
     }
 }
