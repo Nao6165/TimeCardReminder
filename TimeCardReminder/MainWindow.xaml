@@ -7,7 +7,7 @@
         xmlns:form="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="TimeCardReminder" Height="334" Width="651" Icon="TimeCard.bmp" Closed="metroWindow_Closed">
+        Title="TimeCardReminder" Height="334" Width="651" Icon="アイコン２－２.bmp" Closed="metroWindow_Closed">
     <Window.DataContext>
         <local:Schedules />
     </Window.DataContext>
