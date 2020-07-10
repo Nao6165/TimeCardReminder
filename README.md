@@ -7,7 +7,7 @@
 windows 10
 # 使用言語、環境
 ## 環境
-WPF Project in Visual C#
+WPF Project in VisualSutudio 2019 C#
 # 使い方
 # ライセンス
 MITです。
