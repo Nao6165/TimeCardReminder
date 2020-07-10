@@ -1,6 +1,7 @@
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
+![Img_MainWindow_01](https://user-images.githubusercontent.com/54632092/87133451-4c76db80-c2d2-11ea-82df-de6ae6d0bc6b.PNG)
 # 動作条件
 ## OS
 windows 10
