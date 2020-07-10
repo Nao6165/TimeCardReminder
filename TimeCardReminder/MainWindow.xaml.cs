@@ -308,10 +308,6 @@ namespace TimeCardReminder
             WriteToFile(scheduleFileName);
         }
 
-        // なぜかReleaseビルドでButton4_Clickで定義すると
-        // System.NullReferenceExceptionエラーとなるので外で宣言
-        // public Schedule scheduleTempNew = new Schedule(new DateTime(0),null);
-        // public Schedule scheduleTempOld = new Schedule(new DateTime(0), null);
         /// <summary>
         /// 編集ボタン押下時処理―listBox1にて指定した項目を変更する
         /// </summary>
@@ -333,14 +329,17 @@ namespace TimeCardReminder
                     MessageBoxOptions.DefaultDesktopOnly);
                 return; 
             }
-            scheduleTempOld = (Schedule)listBox1.SelectedItem;
 
+            // 更新スケジュールを作成。
+            scheduleTempOld = (Schedule)listBox1.SelectedItem;
             scheduleTempNew.Message = textBox1.Text;
             scheduleTempNew.Timer = dateTimePicker1.Value;
             scheduleTempNew.Enable = scheduleTempOld.Enable;
-            //listBox1.Items.Remove(scheduleTempOld);
+
+            // 古いスケジュールを削除
             listBox1.Items.RemoveAt(lbIndex);
 
+            // 更新スケジュールを挿入
             listBox1.Items.Insert(lbIndex, scheduleTempNew);
 
             // ListBox設定をファイルに保存
@@ -385,11 +384,10 @@ namespace TimeCardReminder
                 isDoubleBoot = false;   // ２重起動フラグを寝かす
                 _pool.Release();        // セマフォを解放する
                 Properties.Settings.Default.Save(); // アプリのプロパティ―設定を保存
-                // Console.WriteLine("Thread A released the semaphore.");
             }
             catch (Exception ex)
             {
-                // Console.WriteLine("Thread A: {0}", ex.Message);
+                // 何もしない。
             }
 
         }
