@@ -4,4 +4,4 @@
 # 使用言語、環境
 # 使い方
 # ライセンス
-MIT
+[![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
