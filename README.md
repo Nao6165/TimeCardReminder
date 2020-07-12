@@ -16,7 +16,7 @@
 - RAM
   8.00GB
 # 使用言語、環境
-## 環境
+## 開発環境
 WPF Project in VisualSutudio 2019 C#
 # 使い方
 ## デプロイ方法
