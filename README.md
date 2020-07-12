@@ -33,5 +33,6 @@ WPF Project in VisualSutudio 2019 C#
 3. 通知したい**メッセージ**と**時刻**を設定
 4. **追加ボタン**を押下
 5. チェックボックスにチェックが入っていることを確認した上で**設定ボタン**を押下
+![設定方法](https://user-images.githubusercontent.com/54632092/87239540-33de0100-c44b-11ea-9057-00844315c5f5.gif)
 # ライセンス
 MIT
