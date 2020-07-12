@@ -4,6 +4,7 @@
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
 コロナ禍によって在宅勤務が増え、忘れがちなタイムカード操作のリマインドアプリを作ってみました。
 通知メッセージや時刻は自分で設定可能なので、カード忘れ以外の案件にもリマインドツールとして活用できます。
+
 ![Img_MainWindow_01](https://user-images.githubusercontent.com/54632092/87133451-4c76db80-c2d2-11ea-82df-de6ae6d0bc6b.PNG)
 ![Img_Message_01](https://user-images.githubusercontent.com/54632092/87135354-e6d81e80-c2d4-11ea-808b-2206e104013b.png)
 # 動作条件
