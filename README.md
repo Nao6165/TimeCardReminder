@@ -1,4 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/issues)
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
 ![Img_MainWindow_01](https://user-images.githubusercontent.com/54632092/87133451-4c76db80-c2d2-11ea-82df-de6ae6d0bc6b.PNG)
@@ -22,5 +23,12 @@ WPF Project in VisualSutudio 2019 C#
    git clone https://github.com/Nao6165/TimeCardReminder.git
    ```
 3. TimeCardReminder.slnからVisualStudio2019を起動してビルドを実行
+## 使用方法
+### 簡単な使用手順
+1. 当アプリを起動。(タスクトレイに常駐します)
+2. タスクトレイのアイコンを右クリックし、**設定**を選択。(設定画面が起動します)
+3. 通知したい**メッセージ**と**時刻**を設定
+4. **追加ボタン**を押下
+5. チェックボックスにチェックが入っていることを確認した上で**設定ボタン**を押下
 # ライセンス
 MIT
