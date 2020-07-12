@@ -13,7 +13,9 @@ WPF Project in VisualSutudio 2019 C#
 ## デプロイ方法
 1. [VisualStudio2019](https://visualstudio.microsoft.com/ja/downloads/)をインストール
 2. 適当なフォルダに当リポジトリをクローン
-　　''' git clone '''
+　```　
+  git clone https://github.com/Nao6165/TimeCardReminder.git
+  ```
 3. TimeCardReminder.slnからVisualStudio2019を起動してビルドを実行
 # ライセンス
 MIT
