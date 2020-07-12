@@ -10,5 +10,10 @@ windows 10
 ## 環境
 WPF Project in VisualSutudio 2019 C#
 # 使い方
+## デプロイ方法
+1. [VisualStudio2019](https://visualstudio.microsoft.com/ja/downloads/)をインストール
+2. 適当なフォルダに当リポジトリをクローン
+　　''' git clone '''
+3. TimeCardReminder.slnからVisualStudio2019を起動してビルドを実行
 # ライセンス
-MITです。
+MIT
