@@ -184,6 +184,7 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Method1(object sender, EventArgs e)
         {
+            ExecMyFile("C:\\Users\\user\\Documents\\temp\\test.xlsx");
 
             MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
@@ -196,7 +197,14 @@ namespace TimeCardReminder
 
             SetNextTimerEvent();
         }
-
+        /// <summary>
+        /// 指定のFileを開く(実行する)
+        /// </summary>
+        /// <param name="targetPath"></param>
+        private void ExecMyFile(string targetPath)
+        {
+            System.Diagnostics.Process.Start(targetPath);
+        }
         /// <summary>
         /// タイマを停止
         /// </summary>
