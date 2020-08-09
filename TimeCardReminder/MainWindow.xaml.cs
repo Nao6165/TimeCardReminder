@@ -18,6 +18,8 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
+// Windows API Code Pack のダイアログの名前空間を using
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace TimeCardReminder
 {
@@ -409,6 +411,28 @@ namespace TimeCardReminder
         {
             Properties.Settings.Default.firstBootWindow = false;
         }
+
+        /// <summary>
+        /// ファイルを開くダイアログボックスを表示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button5_Click(object sender, RoutedEventArgs e)
+        {
+            // ダイアログのインスタンスを生成
+            var dialog = new CommonOpenFileDialog("ファイルを開く");
+
+            // ファイルの種類を設定
+            dialog.Filters.Add(new CommonFileDialogFilter("HTML ファイル", "*.html;*.htm"));
+            dialog.Filters.Add(new CommonFileDialogFilter("テキストファイル", "*.txt"));
+            dialog.Filters.Add(new CommonFileDialogFilter("全てのファイル", "*.*"));
+
+            // ダイアログを表示
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                MessageBox.Show(dialog.FileName);
+            }
+        }
     }
 
     /// <summary>
@@ -419,12 +443,14 @@ namespace TimeCardReminder
         public bool Enable { get; set; }        // リマインドの有効無効(チェックボックス)
         public DateTime Timer { get; set; }     // リマインド時間
         public string Message { get; set; }     // リマインド時のメッセージ
+        public string ExecFilePath { get; set; }     // リマインド時の実行ファイルパス
 
-        public Schedule(DateTime timer, String message, bool enable = false)
+        public Schedule(DateTime timer, String message, bool enable = false, String execFilePath = "")
         {
             this.Enable = enable;
             this.Timer = timer;
             this.Message = message;
+            this.ExecFilePath = execFilePath;
         }
     }
 
