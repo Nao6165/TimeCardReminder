@@ -18,6 +18,8 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
+// Windows API Code Pack のダイアログの名前空間を using
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace TimeCardReminder
 {
@@ -78,7 +80,6 @@ namespace TimeCardReminder
         }
 
         private DispatcherTimer timer1;
-        // public Schedules schedules = new Schedules();
         public Schedule nextSchedule = new Schedule(new DateTime(),null);
         public string scheduleFileName = "schedule.txt";
 
@@ -88,6 +89,7 @@ namespace TimeCardReminder
         private static bool isFirst = true;
         private static bool isDoubleBoot = false;
         private static MainWindow currentWindow;
+        private static String execFilePathWork = "";  // イベント発生時に実行するファイルPath
 
         /// <summary>
         /// MainWindowを２重起動しようとしたことを通知
@@ -184,6 +186,22 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Method1(object sender, EventArgs e)
         {
+            if(nextSchedule.ExecFilePath != "")
+            {
+                if (File.Exists(nextSchedule.ExecFilePath))
+                {
+                    ExecMyFile(nextSchedule.ExecFilePath);
+                }
+                else
+                {
+                    MessageBox.Show($"ファイルがありません",
+                        "TimeCardReminder",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.DefaultDesktopOnly);
+                }
+            }
 
             MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
@@ -196,7 +214,16 @@ namespace TimeCardReminder
 
             SetNextTimerEvent();
         }
-
+        
+        /// <summary>
+        /// 指定のFileを開く(実行する)
+        /// </summary>
+        /// <param name="targetPath"></param>
+        private void ExecMyFile(string targetPath)
+        {
+            System.Diagnostics.Process.Start(targetPath);
+        }
+        
         /// <summary>
         /// タイマを停止
         /// </summary>
@@ -214,7 +241,7 @@ namespace TimeCardReminder
             System.IO.StreamWriter SaveFile = new System.IO.StreamWriter(fileName);
             foreach (Schedule item in listBox1.Items)
             {
-                SaveFile.WriteLine($"{item.Timer}\t{item.Message}\t{item.Enable.ToString()}");
+                SaveFile.WriteLine($"{item.Timer}\t{item.Message}\t{item.Enable}\t{item.ExecFilePath}");
             }
             SaveFile.Close();
         }
@@ -237,6 +264,7 @@ namespace TimeCardReminder
                         s.Timer = DateTime.Parse(split[0].ToString());
                         s.Message = split[1].ToString();
                         s.Enable = bool.Parse(split[2].ToString());
+                        s.ExecFilePath = split[3].ToString();
 
                         // listBox1.Items.Add(s);
                         schedules.mySchedules.Add(s);
@@ -274,7 +302,7 @@ namespace TimeCardReminder
             }
 
             // ListBoxに登録
-            Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString(),true);
+            Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString(),true, execFilePathWork);
             listBox1.Items.Add(schedule);
             
 
@@ -309,7 +337,7 @@ namespace TimeCardReminder
         }
 
         /// <summary>
-        /// 編集ボタン押下時処理―listBox1にて指定した項目を変更する
+        /// 変更ボタン押下時処理―listBox1にて指定した項目を変更する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -335,6 +363,7 @@ namespace TimeCardReminder
             scheduleTempNew.Message = textBox1.Text;
             scheduleTempNew.Timer = dateTimePicker1.Value;
             scheduleTempNew.Enable = scheduleTempOld.Enable;
+            scheduleTempNew.ExecFilePath = execFilePathWork;
 
             // 古いスケジュールを削除
             listBox1.Items.RemoveAt(lbIndex);
@@ -368,7 +397,15 @@ namespace TimeCardReminder
             }
             textBox1.Text = schedule.Message;
             dateTimePicker1.Value = schedule.Timer;
-
+            textBlock2.Text = System.IO.Path.GetFileName(schedule.ExecFilePath);
+            if(schedule.ExecFilePath == "")
+            {
+                button5.Content = "参照";
+            }
+            else
+            {
+                button5.Content = "クリア";
+            }
         }
 
         /// <summary>
@@ -392,14 +429,59 @@ namespace TimeCardReminder
 
         }
 
+        /// <summary>
+        /// 「起動時にこのWindowを開かない」チェックボックスをチェックした場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckBox2_Checked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.firstBootWindow = true;
         }
 
+        /// <summary>
+        /// 「起動時にこのWindowを開かない」チェックボックスのチェックが外された場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckBox2_Unchecked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.firstBootWindow = false;
+        }
+
+        /// <summary>
+        /// 参照ボタン押下時に、ファイルを開くダイアログボックスを表示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button5_Click(object sender, RoutedEventArgs e)
+        {
+            if (button5.Content.ToString() != "参照")
+            {
+                textBlock2.Text = "";
+                execFilePathWork = "";
+                button5.Content = "参照";
+            }
+            else
+            {
+                // ダイアログのインスタンスを生成
+                var refExecFileDialog = new CommonOpenFileDialog("ファイルを開く");
+
+                // ファイルの種類を設定
+                refExecFileDialog.Filters.Add(new CommonFileDialogFilter("HTML ファイル", "*.html;*.htm"));
+                refExecFileDialog.Filters.Add(new CommonFileDialogFilter("テキストファイル", "*.txt"));
+                refExecFileDialog.Filters.Add(new CommonFileDialogFilter("実行ファイル", "*.exe"));
+                refExecFileDialog.Filters.Add(new CommonFileDialogFilter("全てのファイル", "*.*"));
+
+                // ダイアログを表示
+                if (refExecFileDialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    // MessageBox.Show(refExecFileDialog.FileName);
+                    execFilePathWork = refExecFileDialog.FileName;
+                    textBlock2.Text = System.IO.Path.GetFileName(refExecFileDialog.FileName);
+                    button5.Content = "クリア";
+                }
+            }
         }
     }
 
@@ -411,12 +493,14 @@ namespace TimeCardReminder
         public bool Enable { get; set; }        // リマインドの有効無効(チェックボックス)
         public DateTime Timer { get; set; }     // リマインド時間
         public string Message { get; set; }     // リマインド時のメッセージ
+        public string ExecFilePath { get; set; }     // リマインド時の実行ファイルパス
 
-        public Schedule(DateTime timer, String message, bool enable = false)
+        public Schedule(DateTime timer, String message, bool enable = false, String execFilePath = "")
         {
             this.Enable = enable;
             this.Timer = timer;
             this.Message = message;
+            this.ExecFilePath = execFilePath;
         }
     }
 
