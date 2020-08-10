@@ -470,6 +470,7 @@ namespace TimeCardReminder
                 // ファイルの種類を設定
                 refExecFileDialog.Filters.Add(new CommonFileDialogFilter("HTML ファイル", "*.html;*.htm"));
                 refExecFileDialog.Filters.Add(new CommonFileDialogFilter("テキストファイル", "*.txt"));
+                refExecFileDialog.Filters.Add(new CommonFileDialogFilter("実行ファイル", "*.exe"));
                 refExecFileDialog.Filters.Add(new CommonFileDialogFilter("全てのファイル", "*.*"));
 
                 // ダイアログを表示
