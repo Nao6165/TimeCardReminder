@@ -6,7 +6,7 @@
 通知メッセージや時刻は自分で設定可能なので、カード忘れ以外の案件にもリマインドツールとして活用できます。
 
 ![Img_MainWindow_v111_01](https://user-images.githubusercontent.com/54632092/90096300-de5c8300-dd6d-11ea-8a9f-7945ea2b6528.PNG)
-![Img_Message_01](https://user-images.githubusercontent.com/54632092/87135354-e6d81e80-c2d4-11ea-808b-2206e104013b.png)
+![Img_Message_03](https://user-images.githubusercontent.com/54632092/90096676-e10ba800-dd6e-11ea-8167-734f9ce09911.png)
 # 動作条件
 下記環境にて動作確認
 - OS
