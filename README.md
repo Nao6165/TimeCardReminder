@@ -1,5 +1,8 @@
-<a href="https://github.com/Nao6165/TimeCardReminder/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/Nao6165/TimeCardReminder"></a>
+[![GitHub issues](https://img.shields.io/github/issues/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/issues)
+[![GitHub forks](https://img.shields.io/github/forks/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/network)
+[![GitHub stars](https://img.shields.io/github/stars/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/stargazers)
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
+[![Twitter](https://img.shields.io/twitter/url?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FNao6165%2FTimeCardReminder)
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
 コロナ禍によって在宅勤務が増え、忘れがちなタイムカード操作のリマインドアプリを作ってみました。
