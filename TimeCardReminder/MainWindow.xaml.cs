@@ -14,15 +14,26 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.ComponentModel;
-// ObservableCollection<T>を使用するために必要
+
+#region ObservableCollection<T>を使用するために必要
 using System.Collections.ObjectModel;
+#endregion
+
 using System.IO;
 using System.Threading;
-// Windows API Code Pack のダイアログの名前空間を using
+
+#region Windows API Code Pack のダイアログの名前空間を using
 using Microsoft.WindowsAPICodePack.Dialogs;
+#endregion
+
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Interop;
+
+#region WpfとFormのAPIの使い分け用
+using MessageBoxOptions = System.Windows.MessageBoxOptions;
+using MessageBox = System.Windows.MessageBox;
+#endregion
 
 namespace TimeCardReminder
 {
@@ -187,7 +198,9 @@ namespace TimeCardReminder
         /// <param name="e"></param>
         private void Method1(object sender, EventArgs e)
         {
-            if(nextSchedule.ExecFilePath != "")
+            // MainWindowが閉じている場合があるので、MainWindowの中心に出るMyMessageBoxではなく、
+            // ここではMessageBoxを使用する。
+            if (nextSchedule.ExecFilePath != "")
             {
                 if (File.Exists(nextSchedule.ExecFilePath))
                 {
@@ -195,19 +208,20 @@ namespace TimeCardReminder
                 }
                 else
                 {
-                    MyMessageBox.Show(new Wpf32Window(this),
-                        $"ファイルがありません",
+                    MessageBox.Show($"ファイルがありません",
                         "TimeCardReminder",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-
-            MyMessageBox.Show(new Wpf32Window(this),
-                $"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
+            MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+                MessageBoxButton.OK,
+                MessageBoxImage.Information,
+                MessageBoxResult.OK,
+                MessageBoxOptions.DefaultDesktopOnly);
 
             timer1.Stop();
 
