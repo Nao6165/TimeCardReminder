@@ -9,10 +9,10 @@
 通知メッセージや時刻は自分で設定可能なので、カード忘れ以外の案件にもリマインドツールとして活用できます。
 また、v1.1.1からファイルも実行できるようになりました。htmlやPythonファイルを起動することによって作業の自動化も図れます。
 
+※以下、順にMainWindow、通知メッセージ
 ![Img_MainWindow_v111_01](https://user-images.githubusercontent.com/54632092/90096300-de5c8300-dd6d-11ea-8a9f-7945ea2b6528.PNG)
-↑MainWindow
 ![Img_Message_03](https://user-images.githubusercontent.com/54632092/90096676-e10ba800-dd6e-11ea-8167-734f9ce09911.png)
-↑通知メッセージ
+
 # 動作条件
 下記環境にて動作確認
 - OS
