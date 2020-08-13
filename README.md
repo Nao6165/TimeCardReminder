@@ -1,4 +1,4 @@
-https://img.shields.io/github/issues/Nao6165/TimeCardReminder
+<a href="https://github.com/Nao6165/TimeCardReminder/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/Nao6165/TimeCardReminder"></a>
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
