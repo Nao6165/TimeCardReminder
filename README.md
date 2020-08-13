@@ -35,9 +35,9 @@ WPF Project in VisualSutudio 2019 C#
 3. TimeCardReminder.slnからVisualStudio2019を起動してビルドを実行
 ## 使用方法
 ### 簡単な使用手順
-1. ReleasesからTimeCardReminder_vx.x.x.zipをダウンロードして解凍します。
-2. TimeCardReminder.exeを実行して当アプリを起動します。(タスクトレイに常駐します)
-3. タスクトレイの**アイコン**![アイコン２－２](https://user-images.githubusercontent.com/54632092/90109762-3d7ac180-dd87-11ea-9d9a-029cb52c8311.png)を右クリックし、**設定**を選択します。(MainWindowが起動します)
+1. **Releases**から**TimeCardReminder_vx.x.x.zip**をダウンロードして解凍します。
+2. **TimeCardReminder.exe**を実行して当アプリを起動します。(タスクトレイに常駐します)
+3. **タスクトレイ**の**アイコン**![アイコン２－２](https://user-images.githubusercontent.com/54632092/90109762-3d7ac180-dd87-11ea-9d9a-029cb52c8311.png)を右クリックし、**設定**を選択します。(MainWindowが起動します)
 4. 通知したい**メッセージ(必須)** と **時刻(必須)**、**実行したいファイル(オプション)** を設定します。
 5. **追加ボタン**を押下します。
 6. **チェックボックス**にチェックが入っていることを確認した上で**設定ボタン**を押下します。
