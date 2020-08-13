@@ -2,7 +2,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/network)
 [![GitHub stars](https://img.shields.io/github/stars/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/stargazers)
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
-[![Twitter](https://img.shields.io/twitter/url?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FNao6165%2FTimeCardReminder)
+
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
 コロナ禍によって在宅勤務が増え、忘れがちなタイムカード操作のリマインドアプリを作ってみました。
@@ -33,7 +33,7 @@ WPF Project in VisualSutudio 2019 C#
 ### 簡単な使用手順
 1. 当アプリを起動。(タスクトレイに常駐します)
 2. タスクトレイのアイコンを右クリックし、**設定**を選択。(設定画面が起動します)
-3. 通知したい**メッセージ**と**時刻**を設定
+3. 通知したい**メッセージ**と**時刻**、**実行したいファイル(在れば)** を設定
 4. **追加ボタン**を押下
 5. チェックボックスにチェックが入っていることを確認した上で**設定ボタン**を押下
 ![設定方法](https://user-images.githubusercontent.com/54632092/87239912-56721900-c44f-11ea-9121-01503b85c456.gif)
