@@ -39,5 +39,7 @@ WPF Project in VisualSutudio 2019 C#
 ![設定方法](https://user-images.githubusercontent.com/54632092/87239912-56721900-c44f-11ea-9121-01503b85c456.gif)
 ## 活用法紹介
 一度、リマインド設定を行い、TimeCardReminder.exeをスタートアップに登録しておけば、あとはPCの電源投入時に自動で起動し、自動でリマインドしてくれます。
+**追記**
+v1.1.1からファイルも実行できるようになりました。htmlやPythonファイルを起動することによって作業の自動化も図れます。
 # ライセンス
 MIT
