@@ -20,6 +20,9 @@ using System.IO;
 using System.Threading;
 // Windows API Code Pack のダイアログの名前空間を using
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Windows.Interop;
 
 namespace TimeCardReminder
 {
@@ -107,21 +110,19 @@ namespace TimeCardReminder
             bool rst = SetNextTimerEvent();
             if(rst == true) 
             {
-                MessageBox.Show($"タイマーをセットしました",
+                MyMessageBox.Show(new Wpf32Window(this),
+                    $"タイマーをセットしました",
                     "TimeCardReminder",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show($"タイマーは無効です",
+                MyMessageBox.Show(new Wpf32Window(this), 
+                    $"タイマーは無効です",
                     "TimeCardReminder",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
 
             WriteToFile(scheduleFileName);
@@ -194,27 +195,25 @@ namespace TimeCardReminder
                 }
                 else
                 {
-                    MessageBox.Show($"ファイルがありません",
+                    MyMessageBox.Show(new Wpf32Window(this),
+                        $"ファイルがありません",
                         "TimeCardReminder",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information,
-                        MessageBoxResult.OK,
-                        MessageBoxOptions.DefaultDesktopOnly);
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
             }
 
-            MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
+            MyMessageBox.Show(new Wpf32Window(this),
+                $"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information,
-                MessageBoxResult.OK,
-                MessageBoxOptions.DefaultDesktopOnly);
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
 
             timer1.Stop();
 
             SetNextTimerEvent();
         }
-        
+
         /// <summary>
         /// 指定のFileを開く(実行する)
         /// </summary>
@@ -291,12 +290,11 @@ namespace TimeCardReminder
             // メッセージが設定されていなければ無効
             if((textBox1.Text == null)|| (textBox1.Text == "")) 
             {
-                MessageBox.Show($"メッセージがありません",
+                MyMessageBox.Show(new Wpf32Window(this),
+                    $"メッセージがありません",
                     "TimeCardReminder",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 return; 
             }
@@ -323,12 +321,11 @@ namespace TimeCardReminder
             // 選択項目がなければ終了
             if(listBox1.SelectedItems.Count == 0)
             {
-                MessageBox.Show($"アイテムが選択されていません",
+                MyMessageBox.Show(new Wpf32Window(this),
+                    $"アイテムが選択されていません",
                    "TimeCardReminder",
-                   MessageBoxButton.OK,
-                   MessageBoxImage.Information,
-                   MessageBoxResult.OK,
-                   MessageBoxOptions.DefaultDesktopOnly);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return; 
             }
             listBox1.Items.RemoveAt(listBox1.SelectedIndex);
@@ -349,12 +346,11 @@ namespace TimeCardReminder
             int lbIndex = listBox1.SelectedIndex;
             if(lbIndex == -1) 
             {
-                MessageBox.Show($"アイテムが選択されていません",
+                MyMessageBox.Show(new Wpf32Window(this),
+                    $"アイテムが選択されていません",
                     "TimeCardReminder",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return; 
             }
 
@@ -374,12 +370,11 @@ namespace TimeCardReminder
             // ListBox設定をファイルに保存
             WriteToFile(scheduleFileName);
 
-            MessageBox.Show($"選択項目を変更しました",
+            MyMessageBox.Show(new Wpf32Window(this),
+                $"選択項目を変更しました",
                "TimeCardReminder",
-               MessageBoxButton.OK,
-               MessageBoxImage.Information,
-               MessageBoxResult.OK,
-               MessageBoxOptions.DefaultDesktopOnly);
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
 
         }
 
@@ -555,6 +550,146 @@ namespace TimeCardReminder
             if (cnt == 0) { return false; }
 
             return true;
+        }
+    }
+
+    static class MyMessageBox
+    {
+        static class NativeWin32API
+        {
+            #region GetWindowLong "指定されたウィンドウに関する情報を取得する。"
+            [DllImport("user32.dll")]
+            static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+            const int GWL_HINSTANCE = -6;   // アプリケーションのインスタンスハンドル
+            public static IntPtr GetWindowHInstance(IntPtr hWnd) => GetWindowLong(hWnd, GWL_HINSTANCE);
+            #endregion
+
+            #region GetCurrentThreadId "プロセスを識別するカレントスレッドの一意のIDを取得する。"
+            [DllImport("kernel32.dll")]
+            public static extern IntPtr GetCurrentThreadId();
+            #endregion
+
+            #region WindowsHookEx "CBT(ウィンドウの生成などのイベントに応じてシステムから呼出される関数)の通知を受け取るフックプロシージャの設定"
+            // アプリケーション定義のフックプロシージャをフックチェーン内にインストールする。
+            [DllImport("user32.dll")]
+            static extern IntPtr SetWindowsHookEx(int idHook, HOOKPROC lpfn, IntPtr hInstance, IntPtr threadId);
+            const int WH_CBT = 5;   // トレーニング(CBT)アプリケーションの通知を受け取るフックプロシージャをインストール。
+            public static IntPtr SetWindowsHookEx(HOOKPROC lpfn, IntPtr hInstance, IntPtr threadId) => SetWindowsHookEx(WH_CBT, lpfn, hInstance, threadId);
+
+            // フックを解除する
+            [DllImport("user32.dll")]
+            public static extern bool UnhookWindowsHookEx(IntPtr hHook);
+
+            // 現在のフックチェーン内の次のフックプロシージャに、フック情報を渡す。
+            [DllImport("user32.dll")]
+            public static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+
+            public delegate IntPtr HOOKPROC(int nCode, IntPtr wParam, IntPtr lParam);
+            public const int HCBT_ACTIVATE = 5; // ウィンドウがこれからアクティブになる
+            #endregion
+
+            #region GetWindowRect "windowの位置と大きさを取得"
+            [DllImport("user32.dll")]
+            static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+            [StructLayout(LayoutKind.Sequential)]   // 宣言した順序通りにメンバーをレイアウト
+            public struct RECT
+            {
+                public int Left, Top, Right, Bottom;
+                public int Height
+                {
+                    get { return Bottom - Top; }
+                    set { Bottom = value + Top; }
+                }
+
+                public int Width
+                {
+                    get { return Right - Left; }
+                    set { Right = value + Left; }
+                }
+            }
+
+            public static RECT GetWindowRect(IntPtr hWnd)
+            {
+                RECT rc;
+                GetWindowRect(hWnd, out rc);
+                return rc;
+            }
+            #endregion
+
+            #region SetWindowPos "Windowの位置やサイズを変更する"
+            [DllImport("user32.dll")]
+            static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+            const uint SWP_NOSIZE = 0x0001;     // cxとcyを使わない。cx:Windowの新しい幅, cy:Windowの新しい高さ
+            const uint SWP_NOZORDER = 0x0004;   // hWndInsertAfterを使わない。 hWndInsertAfter:Zオーダー(ウインドウが重なり合うときの列)を決めるためのウインドウハンドル
+            const uint SWP_NOACTIVATE = 0x0010; // ウインドウをアクティブ化しない。 
+
+            public static bool SetWindowPos(IntPtr hWnd, int x, int y)
+            {
+                var flags = SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE;
+                return SetWindowPos(hWnd, 0, x, y, 0, 0, flags);
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Hookを設定してMessageBoxを呼び出す。
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="text"></param>
+        /// <param name="caption"></param>
+        /// <param name="buttons"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public static DialogResult Show(System.Windows.Forms.IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            hOwner = owner.Handle;
+            var hInstance = NativeWin32API.GetWindowHInstance(owner.Handle);
+            var threadId = NativeWin32API.GetCurrentThreadId();
+            hHook = NativeWin32API.SetWindowsHookEx(new NativeWin32API.HOOKPROC(HookProc), hInstance, threadId);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon);
+        }
+
+        private static IntPtr hOwner = (IntPtr)null;
+        private static IntPtr hHook = (IntPtr)null;
+        /// <summary>
+        /// MessageBoxの位置をOwnerWindowの中心に設定する
+        /// </summary>
+        /// <param name="nCode"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        private static IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode == NativeWin32API.HCBT_ACTIVATE)
+            {
+                // OwnerWindowとMessageBoxの領域を取得する
+                var rcOwner = NativeWin32API.GetWindowRect(hOwner);
+                var rcMsgBox = NativeWin32API.GetWindowRect(wParam);
+
+                // MessageBoxをOwnerWindowの中心に移動する
+                var x = rcOwner.Left + (rcOwner.Width - rcMsgBox.Width) / 2;
+                var y = rcOwner.Top + (rcOwner.Height - rcMsgBox.Height) / 2;
+                NativeWin32API.SetWindowPos(wParam, x, y);
+
+                // フックを解除する
+                NativeWin32API.UnhookWindowsHookEx(hHook);
+                hHook = (IntPtr)null;
+            }
+            return NativeWin32API.CallNextHookEx(hHook, nCode, wParam, lParam);
+        }
+    }
+
+    /// <summary>
+    /// WpfのハンドラをFormsに使用できるようにする
+    /// </summary>
+    public class Wpf32Window : System.Windows.Forms.IWin32Window
+    {
+        public IntPtr Handle { get; private set; }
+
+        public Wpf32Window(Window window)
+        {
+            // wpf->Forms
+            this.Handle = new WindowInteropHelper(window).Handle;
         }
     }
 }
