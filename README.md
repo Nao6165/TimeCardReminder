@@ -1,5 +1,4 @@
 [![GitHub license](https://img.shields.io/github/license/Nao6165/TimeCardReminder)](https://github.com/Nao6165/TimeCardReminder/blob/master/LICENSE)
-![Img_Message_03](https://user-images.githubusercontent.com/54632092/90096676-e10ba800-dd6e-11ea-8167-734f9ce09911.png)
 # TimeCardReminder
 リマインドしたい内容と時間をセットしておくとメッセージボックスでお知らせしてくれるツールです。
 コロナ禍によって在宅勤務が増え、忘れがちなタイムカード操作のリマインドアプリを作ってみました。
