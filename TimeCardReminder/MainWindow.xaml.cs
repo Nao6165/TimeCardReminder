@@ -316,10 +316,9 @@ namespace TimeCardReminder
             // ListBoxに登録
             Schedule schedule = new Schedule(dateTimePicker1.Value, textBox1.Text.ToString(),true, execFilePathWork);
             listBox1.Items.Add(schedule);
-            
 
-            // テキストボックス内の文字を消去
-            textBox1.Text = null;
+            // 追加したアイテムを選択
+            listBox1.SelectedIndex = listBox1.Items.Count - 1;
 
             // ListBox設定をファイルに保存
             WriteToFile(scheduleFileName);
@@ -380,6 +379,9 @@ namespace TimeCardReminder
 
             // 更新スケジュールを挿入
             listBox1.Items.Insert(lbIndex, scheduleTempNew);
+
+            // 更新したアイテムを選択
+            listBox1.SelectedIndex = lbIndex;
 
             // ListBox設定をファイルに保存
             WriteToFile(scheduleFileName);
