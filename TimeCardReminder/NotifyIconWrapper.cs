@@ -63,6 +63,10 @@ namespace TimeCardReminder
         /// <param name="e">イベントデータ</param>
         private void toolStripMenuItem_Exit_Click(object sender, EventArgs e)
         {
+            // アプリ再起動時に悪影響を及ぼさないよう、セット済みのタイマイベントを破棄。
+            var wnd = new MainWindow();
+            wnd.StopTimer();
+
             // 現在のアプリケーションを終了
             Application.Current.Shutdown();
         }

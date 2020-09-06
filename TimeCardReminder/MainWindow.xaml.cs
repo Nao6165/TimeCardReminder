@@ -238,11 +238,22 @@ namespace TimeCardReminder
         }
         
         /// <summary>
-        /// タイマを停止
+        /// タイマを停止(不要かも)
         /// </summary>
         private void StopTimer(object sender, CancelEventArgs e)
         {
             timer1.Stop();
+        }
+
+        /// <summary>
+        /// タイマを停止(アプリ終了時用)
+        /// </summary>
+        public void StopTimer()
+        {
+            if (timer1 != null)
+            {
+                timer1.Stop();
+            }
         }
 
         /// <summary>
