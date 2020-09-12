@@ -93,7 +93,7 @@ namespace TimeCardReminder
 
         }
 
-        private DispatcherTimer timer1;
+        private static DispatcherTimer timer1;
         public Schedule nextSchedule = new Schedule(new DateTime(),null);
         public string scheduleFileName = "schedule.txt";
 
