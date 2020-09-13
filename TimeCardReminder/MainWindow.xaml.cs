@@ -90,6 +90,16 @@ namespace TimeCardReminder
                 Close();
             }
 
+            // MainWindowに背景を追加する。
+            // exeファイルと同一フォルダにHaikei.jpgという名前の画像ファイルを配置する。
+            // 画像ファイルはMainWindowと同じサイズの651×380ピクセル。
+            // イメージブラシの作成
+            ImageBrush imageBrush = new ImageBrush();
+            imageBrush.ImageSource = new System.Windows.Media.Imaging.BitmapImage(new Uri("Haikei.jpg", UriKind.Relative));
+            imageBrush.Opacity = 1.0;
+            // ブラシを背景に設定する
+            this.Background = imageBrush;
+
             // 初回フラグを更新
             isFirst = false;
 
