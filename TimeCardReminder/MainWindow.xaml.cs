@@ -73,6 +73,7 @@ namespace TimeCardReminder
             // スケジュール情報をロード
             ReadFromFile(ref schedules);
 
+            // 通知アイテムリスト(listBox1にスケジュール情報を格納)
             foreach(Schedule s in schedules.mySchedules)
             {
                 listBox1.Items.Add(s);
@@ -80,7 +81,8 @@ namespace TimeCardReminder
 
             // 直近のリマインド項目をタイマーセット
             SetNextTimerEvent();
-
+            
+            // 起動時にこのウィンドウを開かないチェックボックスを確認
             checkBox2.IsChecked = Properties.Settings.Default.firstBootWindow;
             if (  (isFirst == true)
                 &&(checkBox2.IsChecked == true)) 
@@ -93,16 +95,18 @@ namespace TimeCardReminder
 
         }
 
-        private static DispatcherTimer timer1;
-        public Schedule nextSchedule = new Schedule(new DateTime(),null);
-        public string scheduleFileName = "schedule.txt";
+        private static DispatcherTimer timer1;  // 通知メッセージを表示させるタイミングを生成する
+        public Schedule nextSchedule = new Schedule(new DateTime(),null);  // スケジュール情報を格納する
+        public string scheduleFileName = "schedule.txt";  // スケジュール情報保存ファイル名
 
-        public static Semaphore _pool;
+        public static Semaphore _pool;  // 当アプリの二重起動を防止するセマフォ
         public const string SemaphoreName = "TimeCardReminderMainWindow";
         private bool createdNew;
-        private static bool isFirst = true;
-        private static bool isDoubleBoot = false;
-        private static MainWindow currentWindow;
+
+        private static bool isFirst = true; // MainWindowの初回起動フラグ
+        private static bool isDoubleBoot = false; // MainWindowの二重起動フラグ
+
+        private static MainWindow currentWindow;    // 現在起動中のMainWindow
         private static String execFilePathWork = "";  // イベント発生時に実行するファイルPath
 
         /// <summary>
@@ -151,7 +155,7 @@ namespace TimeCardReminder
                 return false;
             }
 
-            if(timer1 != null) { timer1.Stop(); }
+            StopTimer();
 
             // タイマのインスタンスを生成
             timer1 = new DispatcherTimer();
@@ -199,9 +203,9 @@ namespace TimeCardReminder
         private void Method1(object sender, EventArgs e)
         {
             // MainWindowが閉じている場合があるので、MainWindowの中心に出るMyMessageBoxではなく、
-            // ここではMessageBoxを使用する。
+            // ここでは通常のMessageBoxを使用する。
             if (nextSchedule.ExecFilePath != "")
-            {
+            {   // 実行したいファイルが登録されていれば、それを実行する。
                 if (File.Exists(nextSchedule.ExecFilePath))
                 {
                     ExecMyFile(nextSchedule.ExecFilePath);
@@ -216,6 +220,7 @@ namespace TimeCardReminder
                         MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
+            // 通知メッセージを表示
             MessageBox.Show($"{nextSchedule.Message}\r\n({DateTime.Now.ToString("HH:mm")})",
                 "TimeCardReminder",
                 MessageBoxButton.OK,
@@ -223,7 +228,7 @@ namespace TimeCardReminder
                 MessageBoxResult.OK,
                 MessageBoxOptions.DefaultDesktopOnly);
 
-            timer1.Stop();
+            StopTimer();
 
             SetNextTimerEvent();
         }
@@ -237,14 +242,6 @@ namespace TimeCardReminder
             System.Diagnostics.Process.Start(targetPath);
         }
         
-        /// <summary>
-        /// タイマを停止(不要かも)
-        /// </summary>
-        private void StopTimer(object sender, CancelEventArgs e)
-        {
-            timer1.Stop();
-        }
-
         /// <summary>
         /// タイマを停止(アプリ終了時用)
         /// </summary>
@@ -276,10 +273,10 @@ namespace TimeCardReminder
         private void ReadFromFile(ref Schedules schedules)
         {
             try
-            {   // Open the text file using a stream reader.
+            {   // ファイルを開く
                 using (StreamReader sr = new StreamReader(scheduleFileName))
                 {
-                    // Read the stream to a string, and write the string to the console.
+                    // ファイルを1行ずつ読み取りを行う。
                     String line = sr.ReadLine();
                     while(line != null)
                     {
@@ -580,6 +577,9 @@ namespace TimeCardReminder
         }
     }
 
+    /// <summary>
+    /// MainWindow(ダイアログ)の真ん中に表示されるMessageBox
+    /// </summary>
     static class MyMessageBox
     {
         static class NativeWin32API
