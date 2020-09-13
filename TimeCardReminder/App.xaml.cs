@@ -27,7 +27,7 @@ namespace TimeCardReminder
             if (!this.Mutex.WaitOne(0, false))
             {
                 // 既に起動しているため終了させる
-                MessageBox.Show("ApplicationName は既に起動しています。", "二重起動防止", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("TimeCardReminder は既に起動しています。", "二重起動防止", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 this.Mutex.Close();
                 this.Mutex = null;
                 Shutdown();
